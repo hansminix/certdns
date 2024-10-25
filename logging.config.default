@@ -1,0 +1,32 @@
+[loggers]
+keys=root,app
+
+[handlers]
+keys=consoleHandler,RotatingFileHandler
+
+[formatters]
+keys=default
+
+[logger_root]
+level=DEBUG
+handlers=consoleHandler,RotatingFileHandler
+
+[logger_app]
+level=DEBUG
+handlers=consoleHandler,RotatingFileHandler
+qualname=app
+propagate=0
+
+[handler_consoleHandler]
+class=StreamHandler
+formatter=default
+args=(sys.stdout,)
+
+[handler_RotatingFileHandler]
+class=handlers.RotatingFileHandler
+formatter=default
+args=("flask.log", 'a', 1000000, 5)
+
+[formatter_default]
+format=[%(asctime)s] %(levelname)s in %(name)s: %(message)s
+

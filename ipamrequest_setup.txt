@@ -1,0 +1,45 @@
+Create directories
+/data/ipamrequest
+/data/ipamrequest/web
+/data/ipamrequest/log
+/data/ipamrequest/db
+
+Owner naar apache:apache
+
+Create virtual environment
+python3 -m -venv /data/ipamrequest/web/venv
+
+Activate virtual environment
+. /data/ipamrequest/web/venv/bin/activate
+
+Install dependencies
+pip3 install flask
+pip3 install flask-admin
+pip3 install flask-sqlalchemy
+Indien nodig: 
+yum install gcc-c++
+yum install platform-python-devel
+
+Create database
+cd /data/ipamrequest/web
+python3
+from app import init_db
+init_db()
+
+apache conf:
+WSGIDaemonProcess ipamrequest user=apache group=apache threads=5 python-home=/data/ipamrequest/web/venv
+WSGIScriptAlias /ipamrequest /data/ipamrequest/web/ipamrequest.wsgi
+WSGIProcessGroup ipamrequest
+WSGIApplicationGroup %{GLOBAL}
+
+<Directory "/data/ipamrequest/web">
+    Require all granted
+</Directory>
+
+Alias /log "/data/ipamrequest/log"
+<Directory "/data/ipamrequest/log">
+    Options Indexes
+    Require all granted
+</Directory>
+
+

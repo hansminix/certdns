@@ -1,0 +1,9 @@
+class Config:
+    SECRET_KEY = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+    SQLITE_FILE="ipamrequest.sqlite3"
+    SQLALCHEMY_DATABASE_URI=f"sqlite:///{ SQLITE_FILE}"
+    DMZ=[('Frontend','Frontend'),('Intermediate','Intermediate'),('Backend','Backend')]
+    Datacenter=[('Maasland','Maasland'),('Den Helder', 'Den Helder')]
+    CIDR=[('32','32'),('31','31'),('30','30'),('29','29'),('28','28'),('27','27'),('26','26'),('25','25')]
+
+
