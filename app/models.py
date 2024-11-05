@@ -5,6 +5,7 @@ from .config import Config
 from sqlalchemy.sql import func
 
 class CertDNS(db.Model):
+    __table_name__= 'cert_dns'
     id=db.Column(db.Integer, primary_key=True)
     certificatename = db.Column(db.String(255))
     hexcode= db.Column(db.String(255))

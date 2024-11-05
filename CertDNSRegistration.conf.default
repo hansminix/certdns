@@ -1,0 +1,12 @@
+[Infoblox]
+ibhost=infoblox.lan
+ibuser=admin
+ibpassword=infoblox
+ibwapi=2.10
+dnsview=default
+sqlitedb=/home/hnoordam/workspace/certdns/instance/certdns.sqlite3
+sshuser=hnoordam
+sshremote=ansibleclient.lan
+sshkey=/home/hnoordam/.ssh/id_ed25519
+DNSserver=@192.168.178.105
+dateformat=%Y-%m-%d %H:%M:%S.%f

@@ -83,7 +83,7 @@ class CertDNSRegistration():
         Create text record, return value if succes, else retun None
         """
         try:
-            txtrec=self.conn.create_object('record:txt', {'name': host, 'text': code, 'extattrs':{'Task nr': {'value': 'Created by certdns script'}}})
+            txtrec=self.conn.create_object('record:txt', {'name': host, 'text': code, 'view': self.dnsview, 'extattrs':{'Task nr': {'value': 'Created by certdns script'}}})
         except Exception as e:
             self.logger.error(f"Error while trying to create TXT record for {host}: {e}")
             return 'Fout bij aanmaken TXT record, check logs.'
@@ -94,7 +94,7 @@ class CertDNSRegistration():
         Delete the existing CName, and create an A record with the IP address found, then create TXT record
         """
         try:
-            cnamefnd=self.conn.get_object('record:cname', {'name':host})
+            cnamefnd=self.conn.get_object('record:cname', {'name':host, 'view': self.dnsview})
             if cnamefnd:
                 cnamedel=self.conn.delete_object(cnamefnd[0]['_ref'])
                 print(cnamedel)
@@ -102,7 +102,7 @@ class CertDNSRegistration():
                     arec=self.conn.create_object('record:a', {'name': host, 'ipv4addr': ipadd, 'view': self.dnsview, 'extattrs':{'Task nr': {'value': 'Created by certdns script'}}})
                     print(arec)
                     if arec:
-                        txtrec=self.conn.create_object('record:txt', {'name': host, 'text': code, 'extattrs':{'Task nr': {'value': 'Created by certdns script'}}})
+                        txtrec=self.conn.create_object('record:txt', {'name': host, 'text': code, 'view': self.dnsview, 'extattrs':{'Task nr': {'value': 'Created by certdns script'}}})
                         return 'OK'
         except Exception as e:
             self.logger.error(f"Error while trying to create TXT record for {host}: {e}")
@@ -193,7 +193,7 @@ class CertDNSRegistration():
             self.logger.debug(f"Processing old request: {row['certificatename']}")
             #First check if TXT record has been requested
             try:
-                txtrec=self.conn.get_object('record:txt', {'name':row['certificatename']},return_fields=['name','last_queried'])
+                txtrec=self.conn.get_object('record:txt', {'name':row['certificatename'], 'view': self.dnsview},return_fields=['name','last_queried'])
                 self.logger.debug(f"Found text record: {txtrec}")
                 if txtrec:
                     if 'last_queried' in txtrec[0] or (datetime.now() - datetime.strptime(row['date_set'],self.dateformat)).days > 7:
@@ -203,11 +203,11 @@ class CertDNSRegistration():
                             txtdel=self.conn.delete_object(txtrec[0]['_ref'])
                             self.logger.debug(f"Deleted record {txtdel}")
                             #Delete A-record
-                            arec=self.conn.get_object('record:a',{'name':row['certificatename']})
+                            arec=self.conn.get_object('record:a',{'name':row['certificatename'], 'view': self.dnsview})
                             if arec:
                                 adel=self.conn.delete_object(arec[0]['_ref'])
                                 self.logger.debug(f"Deleted record {adel}")
-                            cnamerec=self.conn.create_object('record:cname',{'name': row['certificatename'], 'canonical': row['cname']})
+                            cnamerec=self.conn.create_object('record:cname',{'name': row['certificatename'], 'canonical': row['cname'], 'view': self.dnsview})
                             self.logger.debug(f"Created record {cnamerec}")
                         else:
                             txtdel=self.conn.delete_object(txtrec[0]['_ref'])
